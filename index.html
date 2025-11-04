@@ -262,7 +262,7 @@
       out += `<div style="text-align:center;margin-bottom:10px;font-size:18px;font-weight:900;color:var(--gold)">${price.toLocaleString()} تومان — قیمت هر گرم</div>`;
 
       weights.forEach(w => {
-        const ojrat = (w >= 1.0) ? 250000 : 220000;
+        const ojrat = (w >= 1.0) ? 420000 : 400000;
         const base = (w * price) + ojrat;
         const tax = base * 0.1;
         const final_price = Math.round(base + tax + (tolerance || 0));
