@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>محاسبه قیمت شمش طلا</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap');
+    body {
+      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #fff7e6, #f9e6b3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+    .card {
+      background: #fffbe6;
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .card:hover { transform: translateY(-6px); }
+    h2 {
+      color: #b8860b;
+      font-weight: 900;
+      font-size: 34px;
+      margin-bottom: 25px;
+    }
+    label {
+      font-size: 22px;
+      font-weight: 700;
+      display: block;
+      margin-top: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 15px;
+      margin-top: 8px;
+      font-size: 24px;
+      border: 2px solid #d4af37;
+      border-radius: 14px;
+      text-align: center;
+      background: #fff;
+      font-weight: 700;
+    }
+    button {
+      margin-top: 25px;
+      width: 100%;
+      background: linear-gradient(45deg, #f9d976, #f39c12);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 26px;
+      padding: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 800;
+    }
+    button:hover {
+      background: linear-gradient(45deg, #f7c948, #e07b00);
+      transform: scale(1.05);
+    }
+    .result {
+      margin-top: 30px;
+      background: #fff3e0;
+      border-radius: 18px;
+      padding: 25px;
+      border: 2px solid #f0c27b;
+      font-size: 22px;
+      font-weight: 700;
+      text-align: right;
+      line-height: 1.9;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .bold {
+      font-weight: 900;
+      color: #b8860b;
+      font-size: 26px;
+    }
+    .switch-container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .switch-btn {
+      background: #fffbe6;
+      border: 2px solid #d4af37;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .switch-btn.active {
+      background: #f9d976;
+      border-color: #b8860b;
+      color: #b8860b;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>💰 محاسبه قیمت شمش طلا</h2>
+
+    <label>قیمت هر گرم طلای ۲۴ (تومان):</label>
+    <input type="number" id="price" placeholder="مثلاً 12,000,000">
+
+    <div class="switch-container" id="toleranceBtns">
+      <div class="switch-btn" data-value="20000">۲۰,۰۰۰</div>
+      <div class="switch-btn" data-value="50000" class="active">۵۰,۰۰۰</div>
+      <div class="switch-btn" data-value="70000">۷۰,۰۰۰</div>
+      <div class="switch-btn" data-value="100000">۱۰۰,۰۰۰</div>
+    </div>
+
+    <button onclick="calculate()">محاسبه</button>
+
+    <div class="result" id="result">نتایج در اینجا نمایش داده می‌شوند.</div>
+  </div>
+
+  <script>
+    const weights = [
+      0.05,0.07,0.100,0.150,0.200,0.250,0.300,0.350,0.400,0.450,0.500,
+      0.550,0.600,0.650,0.700,0.750,0.800,0.850,0.900,0.950,1.0,1.100,
+      1.150,1.200,1.250,1.300,1.350,1.400,1.450,1.500,1.550,1.600,1.650,
+      1.700,1.750,1.800,1.850,1.900,1.950,2.00,3.00,4.00
+    ];
+
+    let tolerance = 50000;
+    const btns = document.querySelectorAll('.switch-btn');
+    btns.forEach(btn => {
+      if (btn.dataset.value == 50000) btn.classList.add('active');
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        tolerance = parseInt(btn.dataset.value);
+      });
+    });
+
+    function calculate() {
+      const price = parseFloat(document.getElementById('price').value);
+      if (isNaN(price)) {
+        document.getElementById('result').innerHTML = "⚠️ لطفاً قیمت طلا را وارد کنید.";
+        return;
+      }
+
+      let html = `<b>📊 قیمت بر اساس وزن‌ها:</b><br><br>`;
+      weights.forEach(w => {
+        const ojrat = w >= 1.0 ? 250000 : 220000;
+        const base = w * price;
+        const total = base + ojrat + ((base + ojrat) * 0.1) + tolerance;
+        html += `وزن ${w.toFixed(3)} گرم → <span class="bold">${total.toLocaleString()} تومان</span><br>`;
+      });
+
+      document.getElementById('result').innerHTML = html;
+    }
+  </script>
+</body>
+</html>
