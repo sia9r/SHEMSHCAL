@@ -2,133 +2,210 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>محاسبه قیمت شمش طلا</title>
+  <title>محاسبه قیمت شمش طلا — لیست وزن‌ها</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap');
-    body {
-      font-family: 'Vazirmatn', Tahoma, sans-serif;
-      background: linear-gradient(135deg, #fff7e6, #f9e6b3);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: #333;
+    :root{
+      --gold:#b8860b;
+      --gold-dark:#d4af37;
+      --card:#fffbe6;
+      --accent:#f9d976;
     }
-    .card {
-      background: #fffbe6;
-      padding: 40px;
-      border-radius: 25px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-      max-width: 600px;
-      width: 90%;
-      text-align: center;
-      position: relative;
-      transition: transform 0.3s ease;
+    html,body{height:100%;margin:0;padding:0}
+    body{
+      font-family:'Vazirmatn',Tahoma,sans-serif;
+      background: linear-gradient(135deg,#fff7e6,#f9e6b3);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      color:#222;
     }
-    .card:hover { transform: translateY(-6px); }
-    h2 {
-      color: #b8860b;
-      font-weight: 900;
-      font-size: 34px;
-      margin-bottom: 25px;
+
+    .card{
+      width:100%;
+      max-width:760px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,250,220,0.98));
+      border-radius:20px;
+      box-shadow:0 16px 48px rgba(0,0,0,0.18);
+      padding:34px;
+      position:relative;
+      overflow:hidden;
     }
-    label {
-      font-size: 22px;
-      font-weight: 700;
-      display: block;
-      margin-top: 15px;
+    h1{
+      margin:0 0 18px 0;
+      font-size:30px;
+      color:var(--gold);
+      font-weight:900;
+      text-align:center;
+      letter-spacing:0.6px;
     }
-    input {
-      width: 100%;
-      padding: 15px;
-      margin-top: 8px;
-      font-size: 24px;
-      border: 2px solid #d4af37;
-      border-radius: 14px;
-      text-align: center;
-      background: #fff;
-      font-weight: 700;
+
+    .controls{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:18px;
     }
-    button {
-      margin-top: 25px;
-      width: 100%;
-      background: linear-gradient(45deg, #f9d976, #f39c12);
-      color: white;
-      border: none;
-      border-radius: 14px;
-      font-size: 26px;
-      padding: 15px;
-      cursor: pointer;
-      transition: 0.3s;
-      font-weight: 800;
+
+    .input-wrap{
+      flex:1 1 320px;
     }
-    button:hover {
-      background: linear-gradient(45deg, #f7c948, #e07b00);
-      transform: scale(1.05);
+    label{
+      display:block;
+      font-weight:800;
+      font-size:18px;
+      color:#6b4f00;
+      margin-bottom:8px;
+      text-align:right;
     }
-    .result {
-      margin-top: 30px;
-      background: #fff3e0;
-      border-radius: 18px;
-      padding: 25px;
-      border: 2px solid #f0c27b;
-      font-size: 22px;
-      font-weight: 700;
-      text-align: right;
-      line-height: 1.9;
-      max-height: 400px;
-      overflow-y: auto;
+    input[type="number"]{
+      width:100%;
+      padding:14px 12px;
+      font-size:20px;
+      border-radius:12px;
+      border:2px solid var(--gold-dark);
+      background:#fff;
+      text-align:center;
+      font-weight:800;
     }
-    .bold {
-      font-weight: 900;
-      color: #b8860b;
-      font-size: 26px;
+
+    .btn-row{
+      display:flex;
+      gap:12px;
+      align-items:center;
     }
-    .switch-container {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
+    button.calc{
+      background:linear-gradient(90deg,var(--accent),#f39c12);
+      color:#fff;
+      border:none;
+      padding:14px 20px;
+      font-size:20px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:900;
     }
-    .switch-btn {
-      background: #fffbe6;
-      border: 2px solid #d4af37;
-      border-radius: 10px;
-      padding: 10px 18px;
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.3s;
+    button.calc:hover{ transform:scale(1.03) }
+
+
+    .toggle-area{
+      position:absolute;
+      left:18px;
+      bottom:18px;
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
-    .switch-btn.active {
-      background: #f9d976;
-      border-color: #b8860b;
-      color: #b8860b;
-      transform: scale(1.05);
+    .toggle{
+      width:44px;height:24px;border-radius:20px;background:#c0392b;position:relative;cursor:pointer;flex-shrink:0;
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+      transition:background .25s;
+    }
+    .toggle::before{
+      content:"";
+      position:absolute;
+      width:20px;height:20px;border-radius:50%;
+      background:#fff;top:2px;left:2px;transition:transform .25s;
+    }
+    .toggle.active{ background:#27ae60; }
+    .toggle.active::before{ transform:translateX(20px); }
+
+
+    .tolerance-chooser{
+      display:none;
+      background:var(--card);
+      border:2px solid var(--gold-dark);
+      padding:8px 10px;
+      border-radius:10px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.12);
+      font-weight:800;
+    }
+    .tolerance-chooser.show{ display:block; }
+
+    select.tol{
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid var(--gold-dark);
+      font-weight:800;
+      font-size:16px;
+      background:#fffbe6;
+    }
+
+
+    .result{
+      margin-top:12px;
+      background:#fff3e0;
+      border-radius:12px;
+      border:2px solid #f0c27b;
+      padding:18px;
+      font-weight:800;
+      color:#222;
+      max-height:520px;
+      overflow:auto;
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:6px 0;
+      align-items:center;
+      border-bottom:1px dashed rgba(0,0,0,0.04);
+      font-size:18px;
+    }
+    .row:last-child{ border-bottom: none; }
+
+    .weight{ color:#5b4020; min-width:160px; text-align:left; font-weight:900; }
+    .price{ color:var(--gold); font-weight:900; font-size:20px; min-width:220px; text-align:right; }
+
+
+    @media(max-width:520px){
+      .controls{ flex-direction:column; align-items:stretch }
+      .btn-row{ width:100%; justify-content:stretch }
+      .weight{ min-width:120px; font-size:16px }
+      .price{ font-size:18px; min-width:140px }
+      .toggle-area{ left:12px; bottom:12px }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>💰 محاسبه قیمت شمش طلا</h2>
+  <div class="card" role="main" aria-labelledby="title">
+    <h1 id="title">قیمت شمش — لیست وزن‌ها</h1>
 
-    <label>قیمت هر گرم طلای ۲۴ (تومان):</label>
-    <input type="number" id="price" placeholder="مثلاً 12,000,000">
+    <div class="controls">
+      <div class="input-wrap">
+        <label for="price24">قیمت هر گرم طلای ۲۴ (تومان)</label>
+        <input id="price24" type="number" inputmode="numeric" placeholder="مثلاً 12,000,000">
+      </div>
 
-    <div class="switch-container" id="toleranceBtns">
-      <div class="switch-btn" data-value="20000">۲۰,۰۰۰</div>
-      <div class="switch-btn" data-value="50000" class="active">۵۰,۰۰۰</div>
-      <div class="switch-btn" data-value="70000">۷۰,۰۰۰</div>
-      <div class="switch-btn" data-value="100000">۱۰۰,۰۰۰</div>
+      <div class="btn-row" aria-hidden="true">
+        <button class="calc" id="btnCalc">محاسبه</button>
+      </div>
     </div>
 
-    <button onclick="calculate()">محاسبه</button>
+    <div class="result" id="result" aria-live="polite">
+      نتیجه بعد از وارد کردن قیمت و زدن محاسبه نمایش داده می‌شود.
+    </div>
 
-    <div class="result" id="result">نتایج در اینجا نمایش داده می‌شوند.</div>
+
+    <div class="toggle-area" title="Toggle">
+      <div id="tolToggle" class="toggle" role="switch" aria-checked="false" aria-label="Toggle"></div>
+      <div id="tolChooser" class="tolerance-chooser" aria-hidden="true">
+        <select id="tolSelect" class="tol" title="انتخاب تلورانس">
+          <option value="20000">۲۰,۰۰۰ تومان</option>
+          <option value="50000" selected>۵۰,۰۰۰ تومان</option>
+          <option value="70000">۷۰,۰۰۰ تومان</option>
+          <option value="100000">۱۰۰,۰۰۰ تومان</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <script>
+
     const weights = [
       0.05,0.07,0.100,0.150,0.200,0.250,0.300,0.350,0.400,0.450,0.500,
       0.550,0.600,0.650,0.700,0.750,0.800,0.850,0.900,0.950,1.0,1.100,
@@ -136,34 +213,75 @@
       1.700,1.750,1.800,1.850,1.900,1.950,2.00,3.00,4.00
     ];
 
+
+    const priceInput = document.getElementById('price24');
+    const resultDiv = document.getElementById('result');
+    const calcBtn = document.getElementById('btnCalc');
+
+
+    const tolToggle = document.getElementById('tolToggle');
+    const tolChooser = document.getElementById('tolChooser');
+    const tolSelect = document.getElementById('tolSelect');
+
+
     let tolerance = 50000;
-    const btns = document.querySelectorAll('.switch-btn');
-    btns.forEach(btn => {
-      if (btn.dataset.value == 50000) btn.classList.add('active');
-      btn.addEventListener('click', () => {
-        btns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        tolerance = parseInt(btn.dataset.value);
-      });
+
+
+    tolToggle.addEventListener('click', () => {
+      tolToggle.classList.toggle('active');
+      const isActive = tolToggle.classList.contains('active');
+      tolToggle.setAttribute('aria-checked', isActive ? 'true' : 'false');
+      if(isActive){
+        tolChooser.classList.add('show');
+        tolChooser.setAttribute('aria-hidden','false');
+
+        tolerance = parseInt(tolSelect.value,10) || 50000;
+      } else {
+        tolChooser.classList.remove('show');
+        tolChooser.setAttribute('aria-hidden','true');
+
+        tolerance = parseInt(tolSelect.value,10) || 50000;
+      }
     });
 
-    function calculate() {
-      const price = parseFloat(document.getElementById('price').value);
-      if (isNaN(price)) {
-        document.getElementById('result').innerHTML = "⚠️ لطفاً قیمت طلا را وارد کنید.";
+
+    tolSelect.addEventListener('change', () => {
+      tolerance = parseInt(tolSelect.value,10) || 50000;
+    });
+
+
+    function calculateList(){
+      const price = parseFloat(priceInput.value);
+      if(isNaN(price) || price <= 0){
+        resultDiv.innerHTML = '⚠️ لطفاً یک قیمت معتبر وارد کنید سپس محاسبه را بزنید.';
         return;
       }
 
-      let html = `<b>📊 قیمت بر اساس وزن‌ها:</b><br><br>`;
+
+      let out = '';
+      out += `<div style="text-align:center;margin-bottom:10px;font-size:18px;font-weight:900;color:var(--gold)">${price.toLocaleString()} تومان — قیمت هر گرم</div>`;
+
       weights.forEach(w => {
-        const ojrat = w >= 1.0 ? 250000 : 220000;
-        const base = w * price;
-        const total = base + ojrat + ((base + ojrat) * 0.1) + tolerance;
-        html += `وزن ${w.toFixed(3)} گرم → <span class="bold">${total.toLocaleString()} تومان</span><br>`;
+        const ojrat = (w >= 1.0) ? 250000 : 220000;
+        const base = (w * price) + ojrat;
+        const tax = base * 0.1;
+        const final_price = Math.round(base + tax + (tolerance || 0));
+        out += `<div class="row">
+                  <div class="weight">وزن ${w.toFixed(3)} گرم</div>
+                  <div class="price">${final_price.toLocaleString()} تومان</div>
+                </div>`;
       });
 
-      document.getElementById('result').innerHTML = html;
+      resultDiv.innerHTML = out;
+
+      resultDiv.scrollTop = 0;
     }
+
+
+    calcBtn.addEventListener('click', calculateList);
+    priceInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') calculateList(); });
+
+
   </script>
 </body>
 </html>
